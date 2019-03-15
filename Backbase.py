@@ -85,51 +85,67 @@ def addTransaction(type, value,balance):
 		return returnString
 
 
-# creates dictionaries which act as the current account and savings account.
-currentDict = {}
-savingsDict = {}
-
-#lines stores the input ledger into a list
-#lines2 stores the updated ledger
-lines= []
-lines2 =[]
-#reads csv file in cmd line. e.g  program.py  file.csv
-file_name = sys.argv[1]
-#opens field and copies contents into list "lines"
-with open(file_name, "r") as readFile:
-	reader = csv.reader(readFile)
-	lines = list(reader)
-
-
-#iterates through lines, appends to current and savings account dictionaries
-#appends transactions to lines2
-#if new transactions happen it goes through addTo functions and writes transactions.
-#if current account transactions cause current account to go into overdraft, use takeFromSavings() function
-#to take money from savings automatically from system. 
-for row in lines:
-	if row[1] =="CURRENT" and row[0] in currentDict:
-		addToCurrent(row)
-	if row[1] =="SAVINGS" and row[0] in savingsDict:
-		addToSavings(row)
-	if row[1] =="CURRENT" and row[0] not in currentDict:
-		createCurrent(row)
-	if row[1] =="SAVINGS" and row[0] not in savingsDict:
-		createSavings(row)
-	lines2.append(row)
-
-#with open("customer-1234567-ledger.csv", "r") as writeFile:		
-#writes a csv file with update transactions
-with open('result.csv', 'w',newline='') as writeFile:
-    writer = csv.writer(writeFile)
-    writer.writerows(lines2)
-
-readFile.close()
-writeFile.close()
 
 
 
 
-#prints the current dictionary states
-#print(currentDict)
-#print(savingsDict)
+try:
+	#lines stores the input ledger into a list
+	#lines2 stores the updated ledger
+	lines= []
+	lines2 =[]
+
+	#reads csv file in cmd line. e.g  program.py  file.csv
+	file_name = sys.argv[1]
+	with open(file_name, "r") as readFile:
+		#opens ledger and copies contents into list "lines"
+		reader = csv.reader(readFile)
+		lines = list(reader)
+	
+except IndexError:
+    print ("Incorrect number of files inputted, Please type in ONE csv file after the python programme.")
+    sys.exit(1)
+else:
+	print ("File exists and has been read.")
+	# creates dictionaries which act as the current account and savings account.
+	currentDict = {}
+	savingsDict = {}
+
+
+
+	#iterates through lines, appends to current and savings account dictionaries
+	#appends transactions to lines2
+	#if new transactions happen it goes through addTo functions and writes transactions.
+	#if current account transactions cause current account to go into overdraft, use takeFromSavings() function
+	#to take money from savings automatically from system. 
+	for row in lines:
+		if row[1] =="CURRENT" and row[0] in currentDict:
+			addToCurrent(row)
+		if row[1] =="SAVINGS" and row[0] in savingsDict:
+			addToSavings(row)
+		if row[1] =="CURRENT" and row[0] not in currentDict:
+			createCurrent(row)
+		if row[1] =="SAVINGS" and row[0] not in savingsDict:
+			createSavings(row)
+		lines2.append(row)
+
+	#with open("customer-1234567-ledger.csv", "r") as writeFile:		
+	#writes a csv file with update transactions
+	with open('result.csv', 'w',newline='') as writeFile:
+		writer = csv.writer(writeFile)
+		writer.writerows(lines2)
+
+	readFile.close()
+	writeFile.close()
+
+
+
+
+
+
+
+
+	#prints the current dictionary states
+	#print(currentDict)
+	#print(savingsDict)
 
